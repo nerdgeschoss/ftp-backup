@@ -1,0 +1,23 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    chronic (0.10.2)
+    dotenv (2.2.1)
+    ftp_sync (0.4.3)
+      net-ftp-list (>= 2.1.1)
+    net-ftp-list (3.2.10)
+    rake (12.0.0)
+    whenever (0.9.7)
+      chronic (>= 0.6.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  dotenv
+  ftp_sync
+  rake
+  whenever
+
+BUNDLED WITH
+   1.14.4
