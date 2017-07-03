@@ -10,6 +10,7 @@ desc "Loads all files from FTP and dumps the DP"
 task :backup do
   ftp.pull_dir "backup", "/" + @path, since: true, skip_errors: true
   dump_db
+  commit
 end
 
 def ftp
@@ -38,4 +39,8 @@ def dump_db
     "--lock-tables=false"
   ]
   sh args.join(" ")
+end
+
+def commit
+  sh "cd backup && git init && git add . && git commit -m 'backup at #{Time.now}' --allow-empty"
 end
