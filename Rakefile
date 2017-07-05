@@ -7,9 +7,17 @@ require "dotenv/load"
 require "uri"
 
 desc "Loads all files from FTP and dumps the DP"
-task :backup do
+task backup: [:ftp, :db, :commit]
+
+task :ftp do
   ftp.pull_dir "backup", "/" + @path, since: true, skip_errors: true
+end
+
+task :db do
   dump_db
+end
+
+task :commit do
   commit
 end
 
@@ -26,19 +34,22 @@ def sh(command)
 end
 
 def dump_db
+  sh "ssh #{ENV['SSH_HOST']} \"#{dump_command} | gzip -c\" | gunzip > backup/db.sql"
+end
+
+def dump_command
   uri = URI.parse ENV["DATABASE_URL"]
   db_name = uri.path.sub("/", "").freeze
   args = [
     "mysqldump",
     "--databases", db_name,
     "--quote-names",
-    "--result-file", "backup/data.sql",
     "--host", uri.host,
     "-p#{uri.password}",
     "--user", uri.user,
     "--lock-tables=false"
   ]
-  sh args.join(" ")
+  args.join(" ")
 end
 
 def commit
